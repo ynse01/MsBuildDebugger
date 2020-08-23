@@ -22,6 +22,11 @@ namespace MsBuildDebugger
             return instance.Targets[name];
         }
 
+        public string[] GetDefaultTargets()
+        {
+            return instance.DefaultTargets.ToArray();
+        }
+
         public string GetPropertyValue(string name)
         {
             return instance.GetPropertyValue(name);
