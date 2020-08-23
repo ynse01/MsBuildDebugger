@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BreakpointLocation.cs" />
     <Compile Include="ConsoleUI.cs" />
     <Compile Include="Debugger.cs" />
     <Compile Include="DebugLogger.cs" />

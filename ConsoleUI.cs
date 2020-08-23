@@ -7,6 +7,7 @@ namespace MsBuildDebugger
     {
         private Debugger debugger;
         private readonly Dictionary<ConsoleKey, Func<bool>> commands;
+        private string currentTarget;
 
         public ConsoleUI(Debugger debugger)
         {
@@ -17,22 +18,23 @@ namespace MsBuildDebugger
             commands.Add(ConsoleKey.M, PrintItemsMetadata);
             commands.Add(ConsoleKey.P, PrintProperties);
             commands.Add(ConsoleKey.F5, Continue);
+            commands.Add(ConsoleKey.F10, StepOver);
         }
 
         public void OnTargetEnter(string name)
         {
-            //Console.WriteLine("Entered target: " + name);
+            currentTarget = name;
             return;
         }
 
         public void OnTargetLeave(string name)
         {
-            //Console.WriteLine("Left target: " + name);
+            currentTarget = "";
         }
 
-        public void OnHitBreakpoint(string target, BreakpointPosition pos)
+        public void OnHitBreakpoint(BreakpointLocation loc)
         {
-            Console.WriteLine("Hit breakpoint at {0} of target {1}", Enum.GetName(typeof(BreakpointPosition), pos), target);
+            Console.WriteLine("Hit breakpoint at {0} of target {1}", loc.GetPositionString(), loc.Target);
             var key = Console.ReadKey();
             ClearLine();
             while (!ExecuteCommand(key))
@@ -59,16 +61,23 @@ namespace MsBuildDebugger
         private static bool PrintUsage()
         {
             Console.WriteLine("Available commands:");
-            Console.WriteLine("  H: Print this help message");
-            Console.WriteLine("  I: Print Item Include");
-            Console.WriteLine("  M: Print Item Metadata");
-            Console.WriteLine("  P: Print Property");
-            Console.WriteLine(" F5: Continue");
+            Console.WriteLine("  H : Print this help message");
+            Console.WriteLine("  I : Print Item Include");
+            Console.WriteLine("  M : Print Item Metadata");
+            Console.WriteLine("  P : Print Property");
+            Console.WriteLine(" F5 : Continue");
+            Console.WriteLine(" F10: Step over");
             return false;
         }
 
         private static bool Continue()
         {
+            return true;
+        }
+
+        private bool StepOver()
+        {
+            debugger.SetBreakpoint(currentTarget, BreakpointPosition.End);
             return true;
         }
 

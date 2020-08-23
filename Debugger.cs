@@ -4,16 +4,10 @@ using System.Collections.Generic;
 
 namespace MsBuildDebugger
 {
-    public enum BreakpointPosition
-    {
-        Start,
-        End
-    }
-
     public class Debugger
     {
         private ConsoleUI ui;
-        private Dictionary<string, BreakpointPosition> breakpoints = new Dictionary<string, BreakpointPosition>();
+        private HashSet<BreakpointLocation> breakpoints = new HashSet<BreakpointLocation>();
 
         public Debugger(string projectFile, string[] targets)
         {
@@ -38,24 +32,27 @@ namespace MsBuildDebugger
 
         public void SetBreakpoint(string target, BreakpointPosition pos)
         {
-            Console.WriteLine("Set breakpoint at {0} of {1}", Enum.GetName(typeof(BreakpointPosition), pos), target);
-            breakpoints.Add(target, pos);
+            Console.WriteLine("Set a breakpoint at {0} of {1}", Enum.GetName(typeof(BreakpointPosition), pos), target);
+            breakpoints.Add(new BreakpointLocation(target, pos));
         }
 
         public void OnTargetEnter(string name)
         {
-            if (breakpoints.TryGetValue(name, out BreakpointPosition pos))
-            {
-                if (pos == BreakpointPosition.Start)
-                {
-                    ui.OnHitBreakpoint(name, pos);
-                }
-            }
             ui.OnTargetEnter(name);
+            var loc = new BreakpointLocation(name, BreakpointPosition.Start);
+            if (breakpoints.Contains(loc))
+            {
+                ui.OnHitBreakpoint(loc);
+            }
         }
 
         public void OnTargetLeave(string name)
         {
+            var loc = new BreakpointLocation(name, BreakpointPosition.End);
+            if (breakpoints.Contains(loc))
+            {
+                ui.OnHitBreakpoint(loc);
+            }
             ui.OnTargetLeave(name);
         }
     }
