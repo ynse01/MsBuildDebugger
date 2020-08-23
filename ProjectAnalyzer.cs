@@ -2,6 +2,7 @@
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using System;
+using System.Linq;
 
 namespace MsBuildDebugger
 {
@@ -25,6 +26,11 @@ namespace MsBuildDebugger
         public string[] GetDefaultTargets()
         {
             return instance.DefaultTargets.ToArray();
+        }
+
+        public ProjectPropertyInstance[] GetProperties()
+        {
+            return instance.Properties.ToArray();
         }
 
         public string GetPropertyValue(string name)

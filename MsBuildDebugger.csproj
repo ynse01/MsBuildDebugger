@@ -49,6 +49,7 @@
     <Compile Include="DebugLogger.cs" />
     <Compile Include="ProjectAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyNameComparer.cs" />
     <Compile Include="TargetTree.cs" />
   </ItemGroup>
   <ItemGroup>
