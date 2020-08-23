@@ -8,52 +8,67 @@ namespace MsBuildDebugger
         public LoggerVerbosity Verbosity { get; set; }
         public string Parameters { get; set; }
 
-        private IEventSource source;
+        private IEventSource3 source;
+        private Debugger debugger;
 
         public void Initialize(IEventSource eventSource)
         {
-            source = eventSource;
+            source = eventSource as IEventSource3;
+            source.ProjectStarted += OnProjectStarted;
+            source.ProjectFinished += OnProjectFinished;
             source.BuildStarted += OnBuildStarted;
             source.BuildFinished += OnBuildFinished;
+            source.AnyEventRaised += OnAnyEvent;
         }
 
         public void Shutdown()
         {
             if (source != null)
             {
+                source.ProjectStarted -= OnProjectStarted;
+                source.ProjectFinished -= OnProjectFinished;
                 source.BuildStarted -= OnBuildStarted;
                 source.BuildFinished -= OnBuildFinished;
+                source.AnyEventRaised -= OnAnyEvent;
             }
+        }
+
+        private void OnAnyEvent(object sender, BuildEventArgs args)
+        {
+            if (args is TargetStartedEventArgs)
+            {
+                debugger.OnTargetEnter(((TargetStartedEventArgs)args).TargetName);
+            }
+            else if (args is TargetFinishedEventArgs)
+            {
+                debugger.OnTargetLeave(((TargetFinishedEventArgs)args).TargetName);
+            }
+            else if (args is BuildMessageEventArgs)
+            {
+                Console.WriteLine("Message: " + ((BuildMessageEventArgs)args).Message);
+            }
+            else
+            {
+                Console.WriteLine("Unknown event: " + args.GetType().Name);
+            }
+        }
+
+        private void OnProjectStarted(object sender, ProjectStartedEventArgs args) {
+            Console.WriteLine("Project started with instance {0} and context {1}.", args.BuildEventContext.ProjectInstanceId, args.BuildEventContext.ProjectContextId);
+            debugger = new Debugger(args.ProjectFile, args.TargetNames.Split(';'));
+            debugger.SetUI(new ConsoleUI());
+        }
+
+        private void OnProjectFinished(object sender, ProjectFinishedEventArgs args)
+        {
         }
 
         private void OnBuildStarted(object sender, BuildStartedEventArgs args)
         {
-            Console.WriteLine("Build started on thread: " + args.ThreadId);
-            var key = Console.ReadKey();
-            while(KeepBlocked(key)) {
-                ClearLine();
-                Console.WriteLine("Invalid input: " + key.KeyChar);
-                key = Console.ReadKey();
-            }
-            Console.CursorLeft = 0;
         }
 
         private void OnBuildFinished(object sender, BuildFinishedEventArgs args)
         {
-
-        }
-
-        public static void ClearLine()
-        {
-            var oversizedWindow = Console.WindowWidth >= Console.BufferWidth;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth));
-            Console.SetCursorPosition(0, Console.CursorTop - (oversizedWindow ? 1 : 0));
-        }
-
-        private bool KeepBlocked(ConsoleKeyInfo key)
-        {
-            return key.Key != ConsoleKey.F5;
         }
     }
 }
