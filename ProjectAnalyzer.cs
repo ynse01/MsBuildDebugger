@@ -44,7 +44,17 @@ namespace MsBuildDebugger
             return instance.GetPropertyValue(name);
         }
 
-        public ProjectItemInstance GetItems(string itemType)
+        public ProjectItemInstance[] GetItems(string query)
+        {
+            var items = instance.Items;
+            var result = items.Where(item =>
+            {
+                return Regex.IsMatch(item.ItemType, query);
+            }).ToArray();
+            return result;
+        }
+
+        public ProjectItemInstance GetItem(string itemType)
         {
             foreach(var item in instance.Items) {
                 if (itemType.Equals(item.ItemType, StringComparison.OrdinalIgnoreCase))

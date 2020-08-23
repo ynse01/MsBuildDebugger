@@ -13,6 +13,8 @@ namespace MsBuildDebugger
             this.debugger = debugger;
             commands = new Dictionary<ConsoleKey, Func<bool>>();
             commands.Add(ConsoleKey.H, PrintUsage);
+            commands.Add(ConsoleKey.I, PrintItemsInclude);
+            commands.Add(ConsoleKey.M, PrintItemsMetadata);
             commands.Add(ConsoleKey.P, PrintProperties);
             commands.Add(ConsoleKey.F5, Continue);
         }
@@ -58,6 +60,8 @@ namespace MsBuildDebugger
         {
             Console.WriteLine("Available commands:");
             Console.WriteLine("  H: Print this help message");
+            Console.WriteLine("  I: Print Item Include");
+            Console.WriteLine("  M: Print Item Metadata");
             Console.WriteLine("  P: Print Property");
             Console.WriteLine(" F5: Continue");
             return false;
@@ -78,6 +82,38 @@ namespace MsBuildDebugger
             foreach (var prop in properties)
             {
                 Console.WriteLine("  $({0}) = {1}", prop.Name, prop.EvaluatedValue);
+            }
+            return false;
+        }
+
+        private bool PrintItemsInclude()
+        {
+            Console.Write("Items: ");
+            var query = Console.ReadLine();
+            var items = debugger.Analyzer.GetItems(query);
+            Array.Sort(items, new ItemTypeComparer());
+            ClearLine();
+            foreach (var item in items)
+            {
+                Console.WriteLine("  @({0}) = {1}", item.ItemType, item.EvaluatedInclude);
+            }
+            return false;
+        }
+
+        private bool PrintItemsMetadata()
+        {
+            Console.Write("Items: ");
+            var query = Console.ReadLine();
+            var items = debugger.Analyzer.GetItems(query);
+            Array.Sort(items, new ItemTypeComparer());
+            ClearLine();
+            foreach (var item in items)
+            {
+                Console.WriteLine("  @({0})", item.ItemType);
+                foreach (var meta in item.Metadata)
+                {
+                    Console.WriteLine("    %({0}) = {1}", meta.Name, meta.EvaluatedValue);
+                }
             }
             return false;
         }
