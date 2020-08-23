@@ -3,6 +3,7 @@ using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MsBuildDebugger
 {
@@ -28,9 +29,14 @@ namespace MsBuildDebugger
             return instance.DefaultTargets.ToArray();
         }
 
-        public ProjectPropertyInstance[] GetProperties()
+        public ProjectPropertyInstance[] GetProperties(string query)
         {
-            return instance.Properties.ToArray();
+            var props = instance.Properties;
+            var result = props.Where(prop =>
+            {
+                return Regex.IsMatch(prop.Name, query);
+            }).ToArray();
+            return result;
         }
 
         public string GetPropertyValue(string name)

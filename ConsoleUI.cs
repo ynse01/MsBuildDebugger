@@ -58,7 +58,7 @@ namespace MsBuildDebugger
         {
             Console.WriteLine("Available commands:");
             Console.WriteLine("  H: Print this help message");
-            Console.WriteLine("  P: Print all Properties");
+            Console.WriteLine("  P: Print Property");
             Console.WriteLine(" F5: Continue");
             return false;
         }
@@ -70,10 +70,12 @@ namespace MsBuildDebugger
 
         private bool PrintProperties()
         {
-            Console.WriteLine("Current defined properties:");
-            var properties = debugger.Analyzer.GetProperties();
+            Console.Write("Property: ");
+            var query = Console.ReadLine();
+            var properties = debugger.Analyzer.GetProperties(query);
             Array.Sort(properties, new PropertyNameComparer());
-            foreach(var prop in properties)
+            ClearLine();
+            foreach (var prop in properties)
             {
                 Console.WriteLine("  $({0}) = {1}", prop.Name, prop.EvaluatedValue);
             }
