@@ -48,6 +48,7 @@
     <Compile Include="ConsoleUI.cs" />
     <Compile Include="Debugger.cs" />
     <Compile Include="DebugLogger.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="ItemTypeComparer.cs" />
     <Compile Include="ProjectAnalyzer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

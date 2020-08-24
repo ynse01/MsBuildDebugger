@@ -2,6 +2,7 @@
 using Microsoft.Build.Evaluation;
 using Microsoft.Build.Execution;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -11,13 +12,18 @@ namespace MsBuildDebugger
     {
         private ProjectCollection collection;
         private ProjectInstance instance;
+        private TargetTree tree;
 
         public ProjectAnalyzer(string projectFile)
         {
             collection = ProjectCollection.GlobalProjectCollection;
             var project = collection.LoadProject(projectFile);
             instance = BuildManager.DefaultBuildManager.GetProjectInstanceForBuild(project);
+            tree = new TargetTree(this);
+            tree.SetDefaultTargets(GetDefaultTargets());
         }
+
+        public TargetTree TargetTree => tree;
 
         public ProjectTargetInstance GetTarget(string name)
         {
@@ -63,6 +69,13 @@ namespace MsBuildDebugger
                 }
             }
             return null;
+        }
+
+        public ProjectTargetInstance[] GetStackTrace(string startTarget)
+        {
+            var trace = new List<ProjectTargetInstance>();
+            trace.Add(GetTarget(startTarget));
+            return trace.ToArray();
         }
     }
 }

@@ -3,9 +3,9 @@ using System;
 
 namespace MsBuildDebugger
 {
-    public enum BreakpointPosition
+    public enum BreakpointPosition : int
     {
-        Start,
+        Start = 0,
         End
     }
 
@@ -27,7 +27,7 @@ namespace MsBuildDebugger
 
         public override int GetHashCode()
         {
-            return Target.GetHashCode() * 0x00010000 + (int)Position;
+            return Target.GetHashCode() * 0x00000100 + (int)Position;
         }
 
         public override bool Equals(object obj)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Build.Execution;
+using System;
 using System.Collections.Generic;
 
 namespace MsBuildDebugger
@@ -17,6 +18,8 @@ namespace MsBuildDebugger
             commands.Add(ConsoleKey.I, PrintItemsInclude);
             commands.Add(ConsoleKey.M, PrintItemsMetadata);
             commands.Add(ConsoleKey.P, PrintProperties);
+            commands.Add(ConsoleKey.S, PrintStackTrace);
+            commands.Add(ConsoleKey.T, PrintTargetTree);
             commands.Add(ConsoleKey.F5, Continue);
             commands.Add(ConsoleKey.F10, StepOver);
         }
@@ -65,6 +68,8 @@ namespace MsBuildDebugger
             Console.WriteLine("  I : Print Item Include");
             Console.WriteLine("  M : Print Item Metadata");
             Console.WriteLine("  P : Print Property");
+            Console.WriteLine("  S : Print current StackTrace of Targets");
+            Console.WriteLine("  T : Print the overall tree of Targets");
             Console.WriteLine(" F5 : Continue");
             Console.WriteLine(" F10: Step over");
             return false;
@@ -123,6 +128,55 @@ namespace MsBuildDebugger
                 {
                     Console.WriteLine("    %({0}) = {1}", meta.Name, meta.EvaluatedValue);
                 }
+            }
+            return false;
+        }
+
+        private bool PrintTargetTree()
+        {
+            var defaults = debugger.Analyzer.GetDefaultTargets();
+            foreach(var root in defaults)
+            {
+                int indent = 0;
+                var rootItem = debugger.Analyzer.TargetTree.Root;
+                PrintTargetTree(rootItem, indent);
+            }
+            return false;
+        }
+
+        private void PrintTargetTree(ITargetTreeItem item, int indent)
+        {
+            var ind = new string(' ', indent * 2);
+            Console.WriteLine("{0}{1}()", ind, item.TargetName);
+            var children = item.DependsOnTargets;
+            indent++;
+            foreach(var child in children)
+            {
+                if (child != null)
+                {
+                    PrintTargetTree(child, indent);
+                }
+            }
+        }
+
+        private void PrintTargetTrace(ITargetTreeItem item, int indent)
+        {
+            var ind = new string(' ', indent * 2);
+            Console.WriteLine("{0}{1}()", ind, item.TargetName);
+            if (item.Parent != null)
+            {
+                indent++;
+                PrintTargetTrace(item.Parent, indent);
+            }
+        }
+
+        private bool PrintStackTrace()
+        {
+            Console.WriteLine("StackTrace:");
+            var currentItem = debugger.Analyzer.TargetTree.GetItem(currentTarget);
+            if (currentItem != null)
+            {
+                PrintTargetTrace(currentItem, 0);
             }
             return false;
         }
