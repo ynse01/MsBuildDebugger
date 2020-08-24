@@ -41,10 +41,12 @@ namespace MsBuildDebugger
         public void OnHitBreakpoint(BreakpointLocation loc)
         {
             Console.WriteLine("Hit breakpoint at {0} of target {1}", loc.GetPositionString(), loc.Target);
+            Console.Write("> ");
             var key = Console.ReadKey();
             ClearLine();
             while (!ExecuteCommand(key))
             {
+                Console.Write("> ");
                 key = Console.ReadKey();
                 ClearLine();
             }
