@@ -1,5 +1,7 @@
 ﻿
 
+using System.Collections.Generic;
+
 namespace MsBuildDebugger
 {
     public static class Helper
@@ -7,15 +9,20 @@ namespace MsBuildDebugger
         /// <summary>
         /// Split a list literal into its items and remove any whitespace surrounding the items.
         /// </summary>
-        public static string[] SplitValue(string val)
+        public static IEnumerable<string> SplitValue(string val)
         {
             val = val.Replace("\r\n", ";");
             var split = val.Split(';');
+            var result = new List<string>();
             for(var i = 0; i < split.Length; i++)
             {
-                split[i] = split[i].Trim();
+                var trimmed = split[i].Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                {
+                    result.Add(trimmed);
+                }
             }
-            return split;
+            return result;
         }
     }
 }

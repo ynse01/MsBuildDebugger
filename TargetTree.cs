@@ -111,18 +111,12 @@ namespace MsBuildDebugger
                             var deps = Helper.SplitValue(analyzer.GetPropertyValue(propName));
                             foreach(var val in deps)
                             {
-                                if (!String.IsNullOrEmpty(val))
-                                {
-                                    ConnectDependant(val, item);
-                                }
+                                ConnectDependant(val, item);
                             }
                         }
                         else
                         {
-                            if (!String.IsNullOrEmpty(dep))
-                            {
-                                ConnectDependant(dep, item);
-                            }
+                            ConnectDependant(dep, item);
                         }
                     }
                 }

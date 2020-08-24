@@ -87,7 +87,7 @@ namespace MsBuildDebugger
 
         private void OnProjectStarted(object sender, ProjectStartedEventArgs args) {
             Console.WriteLine("Project started with instance {0} and context {1}.", args.BuildEventContext.ProjectInstanceId, args.BuildEventContext.ProjectContextId);
-            debugger = new Debugger(args.ProjectFile, args.TargetNames.Split(';'));
+            debugger = new Debugger(args.ProjectFile, Helper.SplitValue(args.TargetNames));
             debugger.SetUI(new ConsoleUI(debugger));
         }
 

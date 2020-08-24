@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MsBuildDebugger
 {
@@ -9,11 +10,11 @@ namespace MsBuildDebugger
         private ConsoleUI ui;
         private HashSet<BreakpointLocation> breakpoints = new HashSet<BreakpointLocation>();
 
-        public Debugger(string projectFile, string[] targets)
+        public Debugger(string projectFile, IEnumerable<string> targets)
         {
             Analyzer = new ProjectAnalyzer(projectFile);
             var breakTargets = targets;
-            if (breakTargets.Length > 0)
+            if (!breakTargets.Any())
             {
                 breakTargets = Analyzer.GetDefaultTargets();
             }
