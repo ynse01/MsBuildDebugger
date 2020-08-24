@@ -36,6 +36,11 @@ namespace MsBuildDebugger
             breakpoints.Add(new BreakpointLocation(target, pos));
         }
 
+        public void RemoveAllBreakpoints()
+        {
+            breakpoints.Clear();
+        }
+
         public void OnTargetEnter(string name)
         {
             ui.OnTargetEnter(name);

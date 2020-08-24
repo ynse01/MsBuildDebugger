@@ -15,12 +15,14 @@ namespace MsBuildDebugger
             this.debugger = debugger;
             commands = new Dictionary<ConsoleKey, Func<bool>>();
             commands.Add(ConsoleKey.B, SetBreakpoint);
+            commands.Add(ConsoleKey.F, Finish);
             commands.Add(ConsoleKey.H, PrintUsage);
             commands.Add(ConsoleKey.I, PrintItemsInclude);
             commands.Add(ConsoleKey.M, PrintItemsMetadata);
             commands.Add(ConsoleKey.P, PrintProperties);
             commands.Add(ConsoleKey.S, PrintStackTrace);
             commands.Add(ConsoleKey.T, PrintTargetTree);
+            commands.Add(ConsoleKey.Q, Quit);
             commands.Add(ConsoleKey.F5, Continue);
             commands.Add(ConsoleKey.F10, StepOver);
         }
@@ -66,15 +68,28 @@ namespace MsBuildDebugger
         {
             Console.WriteLine("Available commands:");
             Console.WriteLine("  B : Set a new Breakpoint");
+            Console.WriteLine("  F : Finish executing, without stopping at breakpoints");
             Console.WriteLine("  H : Print this help message");
             Console.WriteLine("  I : Print Item Include");
             Console.WriteLine("  M : Print Item Metadata");
             Console.WriteLine("  P : Print Property");
             Console.WriteLine("  S : Print current StackTrace of Targets");
             Console.WriteLine("  T : Print the overall tree of Targets");
+            Console.WriteLine("  Q : Quit immediately");
             Console.WriteLine(" F5 : Continue");
             Console.WriteLine(" F10: Step over");
             return false;
+        }
+
+        private bool Finish()
+        {
+            debugger.RemoveAllBreakpoints();
+            return true;
+        }
+
+        private bool Quit()
+        {
+            throw new Exception("User requested to Quit");
         }
 
         private static bool Continue()
