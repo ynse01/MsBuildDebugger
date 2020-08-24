@@ -33,7 +33,6 @@ namespace MsBuildDebugger
 
         public void SetBreakpoint(string target, BreakpointPosition pos)
         {
-            Console.WriteLine("Set a breakpoint at {0} of {1}", Enum.GetName(typeof(BreakpointPosition), pos), target);
             breakpoints.Add(new BreakpointLocation(target, pos));
         }
 

@@ -14,6 +14,7 @@ namespace MsBuildDebugger
         {
             this.debugger = debugger;
             commands = new Dictionary<ConsoleKey, Func<bool>>();
+            commands.Add(ConsoleKey.B, SetBreakpoint);
             commands.Add(ConsoleKey.H, PrintUsage);
             commands.Add(ConsoleKey.I, PrintItemsInclude);
             commands.Add(ConsoleKey.M, PrintItemsMetadata);
@@ -64,6 +65,7 @@ namespace MsBuildDebugger
         private static bool PrintUsage()
         {
             Console.WriteLine("Available commands:");
+            Console.WriteLine("  B : Set a new Breakpoint");
             Console.WriteLine("  H : Print this help message");
             Console.WriteLine("  I : Print Item Include");
             Console.WriteLine("  M : Print Item Metadata");
@@ -84,6 +86,20 @@ namespace MsBuildDebugger
         {
             debugger.SetBreakpoint(currentTarget, BreakpointPosition.End);
             return true;
+        }
+
+        private bool SetBreakpoint()
+        {
+            Console.Write("Set breakpoint at start of Target: ");
+            var query = Console.ReadLine();
+            var targets = debugger.Analyzer.GetTargets(query);
+            ClearLine();
+            foreach(var target in targets)
+            {
+                debugger.SetBreakpoint(target.Name, BreakpointPosition.Start);
+                Console.WriteLine("Added breakpoint at start of " + target.Name);
+            }
+            return false;
         }
 
         private bool PrintProperties()

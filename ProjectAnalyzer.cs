@@ -30,6 +30,16 @@ namespace MsBuildDebugger
             return instance.Targets[name];
         }
 
+        public ProjectTargetInstance[] GetTargets(string query)
+        {
+            var targets = instance.Targets;
+            var result = targets.Where(pair =>
+            {
+                return Regex.IsMatch(pair.Key, query);
+            }).Select(item => item.Value).ToArray();
+            return result;
+        }
+
         public string[] GetDefaultTargets()
         {
             return instance.DefaultTargets.ToArray();
