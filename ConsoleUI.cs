@@ -1,4 +1,4 @@
-﻿using Microsoft.Build.Execution;
+﻿
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -129,7 +129,6 @@ namespace MsBuildDebugger
         {
             var target = debugger.Analyzer.GetTarget(currentTarget);
             var loc = target.Location;
-            Console.WriteLine("Inspecting line {0} of file {1}", loc.Line,  loc.File);
             if (File.Exists(loc.File))
             {
                 var lines = File.ReadAllLines(loc.File);
@@ -137,6 +136,7 @@ namespace MsBuildDebugger
                 var endLine = Math.Min(loc.Line + 20, lines.Length);
                 for(var i = startLine; i < endLine; i++)
                 {
+                    Console.Write("{0:####}:", i);
                     Console.WriteLine(lines[i]);
                 }
             }
