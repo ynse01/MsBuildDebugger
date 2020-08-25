@@ -27,6 +27,8 @@ namespace MsBuildDebugger
             commands.Add(ConsoleKey.Q, Quit);
             commands.Add(ConsoleKey.F5, Continue);
             commands.Add(ConsoleKey.F10, StepOver);
+            Console.Title = "Debugging " + debugger.Analyzer.ProjectFileName();
+            Console.WriteLine("(Type h for help)");
         }
 
         public void OnTargetEnter(string name)
