@@ -134,6 +134,9 @@ namespace MsBuildDebugger
                 var lines = File.ReadAllLines(loc.File);
                 var startLine = Math.Max(loc.Line - 1, 0);
                 var endLine = Math.Min(loc.Line + 20, lines.Length);
+                var header = Helper.AlignStringInSpace(loc.File, Console.WindowWidth - 8, HorizontalAlignment.Center);
+                Console.WriteLine(" -- {0} --", header);
+                Console.WriteLine(new string('=', Console.WindowWidth - 1));
                 for(var i = startLine; i < endLine; i++)
                 {
                     Console.Write("{0:####}:", i);

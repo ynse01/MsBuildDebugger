@@ -24,5 +24,22 @@ namespace MsBuildDebugger
             }
             return result;
         }
+
+        public static string AlignStringInSpace(string input, int space, HorizontalAlignment alignment)
+        {
+            var result = input;
+            if (input.Length > space)
+            {
+                result = input.Substring(0, space - 3) + "...";
+            }
+            return result;
+        }
+    }
+
+    public enum HorizontalAlignment
+    {
+        Left,
+        Center,
+        Right
     }
 }
