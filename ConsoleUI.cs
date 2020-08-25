@@ -1,6 +1,7 @@
 ﻿using Microsoft.Build.Execution;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MsBuildDebugger
 {
@@ -15,6 +16,7 @@ namespace MsBuildDebugger
             this.debugger = debugger;
             commands = new Dictionary<ConsoleKey, Func<bool>>();
             commands.Add(ConsoleKey.B, SetBreakpoint);
+            commands.Add(ConsoleKey.C, InspectCode);
             commands.Add(ConsoleKey.F, Finish);
             commands.Add(ConsoleKey.H, PrintUsage);
             commands.Add(ConsoleKey.I, PrintItemsInclude);
@@ -71,6 +73,7 @@ namespace MsBuildDebugger
         {
             Console.WriteLine("Available commands:");
             Console.WriteLine("  B : Set a new Breakpoint");
+            Console.WriteLine("  C : Inspect executing code");
             Console.WriteLine("  F : Finish executing, without stopping at breakpoints");
             Console.WriteLine("  H : Print this help message");
             Console.WriteLine("  I : Print Item Include");
@@ -116,6 +119,24 @@ namespace MsBuildDebugger
             {
                 debugger.SetBreakpoint(target.Name, BreakpointPosition.Start);
                 Console.WriteLine("Added breakpoint at start of " + target.Name);
+            }
+            return false;
+        }
+
+        private bool InspectCode()
+        {
+            var target = debugger.Analyzer.GetTarget(currentTarget);
+            var loc = target.Location;
+            Console.WriteLine("Inspecting line {0} of file {1}", loc.Line,  loc.File);
+            if (File.Exists(loc.File))
+            {
+                var lines = File.ReadAllLines(loc.File);
+                var startLine = Math.Max(loc.Line - 1, 0);
+                var endLine = Math.Min(loc.Line + 20, lines.Length);
+                for(var i = startLine; i < endLine; i++)
+                {
+                    Console.WriteLine(lines[i]);
+                }
             }
             return false;
         }
