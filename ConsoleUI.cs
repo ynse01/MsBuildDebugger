@@ -181,6 +181,7 @@ namespace MsBuildDebugger
             foreach (var item in items)
             {
                 Console.WriteLine("  @({0})", item.ItemType);
+                Console.WriteLine("    %(Identity) = {0}", item.EvaluatedInclude); 
                 foreach (var meta in item.Metadata)
                 {
                     Console.WriteLine("    %({0}) = {1}", meta.Name, meta.EvaluatedValue);
