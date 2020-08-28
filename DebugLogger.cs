@@ -35,13 +35,13 @@ namespace MsBuildDebugger
 
         private void OnAnyEvent(object sender, BuildEventArgs args)
         {
-            if (args is TargetStartedEventArgs)
+            if (args is TargetStartedEventArgs targetStartedArgs)
             {
-                debugger.OnTargetEnter(((TargetStartedEventArgs)args).TargetName);
+                debugger.OnTargetEnter(targetStartedArgs.TargetName);
             }
-            else if (args is TargetFinishedEventArgs)
+            else if (args is TargetFinishedEventArgs targetFinishedArgs)
             {
-                debugger.OnTargetLeave(((TargetFinishedEventArgs)args).TargetName);
+                debugger.OnTargetLeave(targetFinishedArgs.TargetName);
             }
             else if (args is BuildMessageEventArgs)
             {
@@ -55,13 +55,13 @@ namespace MsBuildDebugger
             {
                 // Nothing to do
             }
-            else if (args is BuildStartedEventArgs)
+            else if (args is BuildStartedEventArgs buildStartedArgs)
             {
-                OnBuildStarted(sender, (BuildStartedEventArgs)args);
+                OnBuildStarted(sender, buildStartedArgs);
             }
-            else if (args is BuildFinishedEventArgs)
+            else if (args is BuildFinishedEventArgs buildFinishedArgs)
             {
-                OnBuildFinished(sender, (BuildFinishedEventArgs)args);
+                OnBuildFinished(sender, buildFinishedArgs);
             }
             else if (args is ProjectEvaluationStartedEventArgs)
             {
@@ -71,13 +71,13 @@ namespace MsBuildDebugger
             {
                 // Nothing to do
             }
-            else if (args is ProjectStartedEventArgs)
+            else if (args is ProjectStartedEventArgs projectStartedArgs)
             {
-                OnProjectStarted(sender, (ProjectStartedEventArgs)args);
+                OnProjectStarted(sender, projectStartedArgs);
             }
-            else if (args is ProjectFinishedEventArgs)
+            else if (args is ProjectFinishedEventArgs projectFinishedArgs)
             {
-                OnProjectFinished(sender, (ProjectFinishedEventArgs)args);
+                OnProjectFinished(sender, projectFinishedArgs);
             }
             else
             {

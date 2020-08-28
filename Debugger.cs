@@ -8,7 +8,7 @@ namespace MsBuildDebugger
     public class Debugger
     {
         private ConsoleUI ui;
-        private HashSet<BreakpointLocation> breakpoints = new HashSet<BreakpointLocation>();
+        private readonly HashSet<BreakpointLocation> breakpoints = new HashSet<BreakpointLocation>();
 
         public Debugger(string projectFile, IEnumerable<string> targets)
         {

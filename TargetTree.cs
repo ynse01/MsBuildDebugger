@@ -24,9 +24,9 @@ namespace MsBuildDebugger
             public string TargetName { get; }
             public ITargetTreeItem Parent { get; }
 
-            private List<TargetTreeItem> beforeTargets = new List<TargetTreeItem>();
-            private List<TargetTreeItem> afterTargets = new List<TargetTreeItem>();
-            private List<TargetTreeItem> dependsOnTargets = new List<TargetTreeItem>();
+            private readonly List<TargetTreeItem> beforeTargets = new List<TargetTreeItem>();
+            private readonly List<TargetTreeItem> afterTargets = new List<TargetTreeItem>();
+            private readonly List<TargetTreeItem> dependsOnTargets = new List<TargetTreeItem>();
 
             public static TargetTreeItem Root => new TargetTreeItem();
 
@@ -64,7 +64,7 @@ namespace MsBuildDebugger
 
         private TargetTreeItem rootTreeItem;
 
-        private ProjectAnalyzer analyzer;
+        private readonly ProjectAnalyzer analyzer;
 
         public TargetTree(ProjectAnalyzer analyzer)
         {

@@ -11,8 +11,8 @@ namespace MsBuildDebugger
 {
     public class ProjectAnalyzer
     {
-        private ProjectCollection collection;
-        private ProjectInstance instance;
+        private readonly ProjectCollection collection;
+        private readonly ProjectInstance instance;
         
         public ProjectAnalyzer(string projectFile)
         {

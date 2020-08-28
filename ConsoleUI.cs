@@ -7,26 +7,28 @@ namespace MsBuildDebugger
 {
     public class ConsoleUI
     {
-        private Debugger debugger;
+        private readonly Debugger debugger;
         private readonly Dictionary<ConsoleKey, Func<bool>> commands;
         private string currentTarget;
 
         public ConsoleUI(Debugger debugger)
         {
             this.debugger = debugger;
-            commands = new Dictionary<ConsoleKey, Func<bool>>();
-            commands.Add(ConsoleKey.B, SetBreakpoint);
-            commands.Add(ConsoleKey.C, InspectCode);
-            commands.Add(ConsoleKey.F, Finish);
-            commands.Add(ConsoleKey.H, PrintUsage);
-            commands.Add(ConsoleKey.I, PrintItemsInclude);
-            commands.Add(ConsoleKey.M, PrintItemsMetadata);
-            commands.Add(ConsoleKey.P, PrintProperties);
-            commands.Add(ConsoleKey.S, PrintStackTrace);
-            commands.Add(ConsoleKey.T, PrintTargetTree);
-            commands.Add(ConsoleKey.Q, Quit);
-            commands.Add(ConsoleKey.F5, Continue);
-            commands.Add(ConsoleKey.F10, StepOver);
+            commands = new Dictionary<ConsoleKey, Func<bool>>
+            {
+                { ConsoleKey.B, SetBreakpoint },
+                { ConsoleKey.C, InspectCode },
+                { ConsoleKey.F, Finish },
+                { ConsoleKey.H, PrintUsage },
+                { ConsoleKey.I, PrintItemsInclude },
+                { ConsoleKey.M, PrintItemsMetadata },
+                { ConsoleKey.P, PrintProperties },
+                { ConsoleKey.S, PrintStackTrace },
+                { ConsoleKey.T, PrintTargetTree },
+                { ConsoleKey.Q, Quit },
+                { ConsoleKey.F5, Continue },
+                { ConsoleKey.F10, StepOver }
+            };
             Console.Title = "Debugging " + debugger.Analyzer.ProjectFileName();
             Console.WriteLine("(Type h for help)");
         }
@@ -64,11 +66,6 @@ namespace MsBuildDebugger
             Console.SetCursorPosition(0, Console.CursorTop);
             Console.Write(new string(' ', Console.WindowWidth));
             Console.SetCursorPosition(0, Console.CursorTop - (oversizedWindow ? 1 : 0));
-        }
-
-        private bool ValidInput(ConsoleKeyInfo key)
-        {
-            return commands.ContainsKey(key.Key);
         }
 
         private static bool PrintUsage()
@@ -194,13 +191,9 @@ namespace MsBuildDebugger
 
         private bool PrintTargetTree()
         {
-            var defaults = debugger.Analyzer.GetDefaultTargets();
-            foreach(var root in defaults)
-            {
-                int indent = 0;
-                var rootItem = debugger.Analyzer.TargetTree.Root;
-                PrintTargetTree(rootItem, indent);
-            }
+            int indent = 0;
+            var rootItem = debugger.Analyzer.TargetTree.Root;
+            PrintTargetTree(rootItem, indent);
             return false;
         }
 
